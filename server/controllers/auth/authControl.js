@@ -100,7 +100,8 @@ export const loginUser = async (req, res) => {
 
         const options = {
             httpOnly : true,
-            secure : false
+            secure : false,
+            sameSite: 'strict', // Prevent CSRF attacks
         }
 
         res.cookie('token' ,token , options).json({
@@ -112,6 +113,10 @@ export const loginUser = async (req, res) => {
                 id : existUser._id
             }
         })
+
+        console.log('Cookie set:', token);
+
+
 
     } catch (error) {
         console.log("Error from login", error);
@@ -134,25 +139,25 @@ export const logoutUser = async (req,res) => {
 }
  
 // auth middlewares 
-export const authMiddleware = async ( req,res,next) => {
-    const token = req.cokkies.token;
+export const authMiddleware = async (req, res, next) => {
+    console.log('Cookies:', req.cookies); // Debugging
+    const token = req.cookies?.token;
+    
     if (!token) {
         return res.status(401).json({
-            success : false,
-            message : "UnAuthorized user!"
-        })
+            success: false,
+            message: "Unauthorized user!",
+        });
     }
 
     try {
-        const decodedToken = jwt.verify(token , CLIENT_SECRET_KEY);
-        req.user = decodedToken
-        next()
+        const decodedToken = jwt.verify(token, 'CLIENT_SECRET_KEY');
+        req.user = decodedToken;
+        next();
     } catch (error) {
         return res.status(401).json({
-            success : false,
-            message : "UnAuthorized user!"
-        })
+            success: false,
+            message: "Unauthorized user!",
+        });
     }
-
-
-}
+};

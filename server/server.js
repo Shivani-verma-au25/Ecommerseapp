@@ -21,7 +21,8 @@ app.use(cors({
         'Cache-control',
         'Expires',
         'Pragma'],
-    credentials : true
+        credentials: true,
+
     }))
 app.use(express.json())
 app.use(CookieParser())

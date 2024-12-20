@@ -3,6 +3,8 @@ import { Navigate, useLocation } from 'react-router-dom'
 
 function CheckAuth({isAuthenticated , user ,children}) {
   const location = useLocation()
+  console.log(location.pathname , isAuthenticated ,"listing");
+  
 
   // if use is not authenticated then redirect the user to login
   if (!isAuthenticated && !(location.pathname.includes('/login') || location.pathname.includes('/register'))) {
@@ -11,7 +13,7 @@ function CheckAuth({isAuthenticated , user ,children}) {
   //if user is authenticated then redirect the user's role is admin redirect to admin dashboard or if user's role is not admin redirect to shoppin dashdoard
 
   if(isAuthenticated && (location.pathname.includes('/login')|| location.pathname.includes('/register'))){
-        console.log(user ,"checkauth");
+        // console.log(user ,"checkauth");
       if(user?.role === 'admin'){
         
         return <Navigate to={'/admin/dashboard'} />
