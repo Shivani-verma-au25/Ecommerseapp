@@ -11,7 +11,9 @@ function CheckAuth({isAuthenticated , user ,children}) {
   //if user is authenticated then redirect the user's role is admin redirect to admin dashboard or if user's role is not admin redirect to shoppin dashdoard
 
   if(isAuthenticated && (location.pathname.includes('/login')|| location.pathname.includes('/register'))){
+        console.log(user ,"checkauth");
       if(user?.role === 'admin'){
+        
         return <Navigate to={'/admin/dashboard'} />
       }else {
         return <Navigate to={'/shop/home'} />
@@ -23,7 +25,7 @@ function CheckAuth({isAuthenticated , user ,children}) {
     return <Navigate to={'/unauthpage'} />}
 
   //if the admin try to reaches shops page
-  if(isAuthenticated && user?.role !== 'admin' && location.pathname.includes('shop')){
+  if(isAuthenticated && user?.role == 'admin' && location.pathname.includes('shop')){
     return <Navigate to={'/admin/dashboard'} />}
   console.log(location.pathname);
   

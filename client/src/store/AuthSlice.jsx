@@ -21,16 +21,31 @@ export const register = createAsyncThunk('/auth/register', async (formData, { re
     }
 });
 
+
+// login user
+export const login = createAsyncThunk('/auth/login', async (formData, { rejectWithValue }) => {
+    try {
+        const response = await axios.post(`http://localhost:5000/api/auth/login`, formData, {
+            withCredentials: true,
+        });
+        return response.data; 
+    } catch (error) {
+        // Reject with error message
+        return rejectWithValue(
+            error.response && error.response.data ? error.response.data.message : error.message
+        );
+    }
+});
+
 const authSlice = createSlice({
     name : 'auth',
     initialState,
     reducers : {
-        setUser : (state ,action) =>{
-
-        }
+        setUser : (state ,action) =>{}
     },
-    extraReducers : (builder) =>  {
-        builder.addCase(register.pending , (state) => {
+    
+    extraReducers : (builder) =>  {builder
+        .addCase(register.pending , (state) => {
             state.isLoading = true
         })
         .addCase(register.fulfilled , (state , action) =>{
@@ -39,6 +54,21 @@ const authSlice = createSlice({
             state.isAuthenticated  = false
         })
         .addCase(register.rejected , (state , action) =>{
+            state.isLoading  = false,
+            state.user = null,
+            state.isAuthenticated  = false
+        })
+
+        .addCase(login.pending , (state) => {
+            state.isLoading = true
+        })
+        .addCase(login.fulfilled , (state , action) =>{
+            console.log(action ,"from slice")
+            state.isAuthenticated = action?.payload?.success ? true : false,
+            state.user = action?.payload?.success ?  action?.payload?.user : null
+          
+        })
+        .addCase(login.rejected , (state , action) =>{
             state.isLoading  = false,
             state.user = null,
             state.isAuthenticated  = false

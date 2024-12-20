@@ -1,7 +1,10 @@
 import CommonForm from '@/components/CommonForm'
 import { loginFormControls } from '@/config/regsiterFormControlls'
 import React, { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { useDispatch } from 'react-redux'
+import { Link, useNavigate } from 'react-router-dom'
+import { login } from '@/store/AuthSlice'
+import { useToast } from '@/hooks/use-toast'
 
 const initialState = {
   email : "",
@@ -10,8 +13,31 @@ const initialState = {
 
 function Login() {
   const [formData , setFormData] = useState(initialState)
+  const dispatch = useDispatch()
+  const navigate = useNavigate()
+  const {toast} = useToast()
 
-  const onSubmit = () => {
+  const onSubmit = (e) => {
+    e.preventDefault()
+
+    dispatch(login(formData))
+    .then((data) => {
+         console.log("data" ,data)
+        if (data?.payload?.success) {
+          toast({
+            title : data?.payload?.message
+          })
+        }else {
+          console.log(data?.payload);
+          
+          toast({
+            title : data?.payload || "Something went wrong while logging !",
+            veriant : "destructive"
+          })
+        }
+      })
+    
+
     
   }
 

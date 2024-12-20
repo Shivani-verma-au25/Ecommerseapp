@@ -20,17 +20,27 @@ function Register() {
 
   const onSubmit = (e) => {
     e.preventDefault()
-    dispatch(register (formData)).then((data)=> {
-      if (data?.payload?.success ) {
+    dispatch(register (formData))
+    .then((data)=> {
+        // console.log('Response Data:', data) // Check the structure here
+        if (data?.payload?.success ) {
         toast({
           title:data?.payload?.message ,
-          // description: "Friday, February 10, 2023 at 5:57 PM",
         })
-      navigate('/auth/login')      
+      navigate('/auth/login')
+      }else {
+            // console.error(data?.payload); // Check if this logs the expected message
+        toast({
+          title: data?.payload || "An error occurred during registration",
+          variant: "destructive",
+        });
       }
+      
+        
     })
+    
+}
 
-    }
 
 
   console.log( "ffomr", formData);
